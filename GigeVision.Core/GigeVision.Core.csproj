@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
     <Authors>Touseef Elahi</Authors>
     <Company>Stira.sa</Company>
     <Product>GigeVision</Product>
@@ -33,24 +34,6 @@
     <None Include="Licenses\License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\runtimes\win-x64\native\StreamRxCpp.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>runtimes\win-x64\native\StreamRxCpp.dll</Link>
-      <Pack>True</Pack>
-      <Visible>false</Visible>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\runtimes\win-x86\native\StreamRxCpp.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>runtimes\win-x86\native\StreamRxCpp.dll</Link>
-      <Pack>True</Pack>
-      <Visible>false</Visible>
     </None>
   </ItemGroup>
 

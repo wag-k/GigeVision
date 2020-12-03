@@ -43,10 +43,6 @@ namespace GigeVision.Core.Models
         private int portRx;
 
         /// <summary>
-        /// Register dictionary of camera
-        /// </summary>
-
-        /// <summary>
         /// Camera constructor with initialized Gvcp Controller
         /// </summary>
         /// <param name="gvcp">GVCP Controller</param>
@@ -70,12 +66,6 @@ namespace GigeVision.Core.Models
 
         public List<ICategory> CategoryDictionary { get; private set; }
 
-        //public Camera(IGenPort genPort)
-        //{
-        //    Task.Run(async () => await SyncParameters().ConfigureAwait(false));
-        //    Init();
-        //    GenPort = genPort;
-        //}
         /// <summary>
         /// Rx port
         /// </summary>
@@ -237,11 +227,6 @@ namespace GigeVision.Core.Models
         public bool IsRawFrame { get; set; } = true;
 
         /// <summary>
-        /// If enabled library will use C++ native code for stream reception
-        /// </summary>
-        public bool IsUsingCppForRx { get; set; }
-
-        /// <summary>
         /// If we set the external buffer using <see cref="SetBuffer(byte[])"/> this will be set
         /// true and software will copy stream on this buffer
         /// </summary>
@@ -352,7 +337,7 @@ namespace GigeVision.Core.Models
             }
             else
             {
-                Updates?.Invoke(this, "Fatal Error: Aquisition Start Register Not Found");
+                Updates?.Invoke(this, "Fatal Error: Acquisition Start Register Not Found");
             }
             return IsStreaming;
         }
@@ -363,18 +348,6 @@ namespace GigeVision.Core.Models
         /// <returns>Is streaming status</returns>
         public async Task<bool> StopStream()
         {
-            if (IsUsingCppForRx)
-            {
-                if (Environment.Is64BitProcess)
-                {
-                    CvInterop64.Stop();
-                }
-                else
-                {
-                    CvInterop.Stop();
-                }
-            }
-
             await Gvcp.WriteRegisterAsync(GvcpRegister.SCDA, 0).ConfigureAwait(false);
             if (await Gvcp.LeaveControl().ConfigureAwait(false))
             {
@@ -589,14 +562,7 @@ namespace GigeVision.Core.Models
 
         private void SetupRxThread()
         {
-            if (IsUsingCppForRx)
-            {
-                streamReceiver.StartRxCppThread();
-            }
-            else
-            {
-                streamReceiver.StartRxThread();
-            }
+            streamReceiver.StartRxThread();
         }
 
         private void SetRxBuffer()
@@ -637,7 +603,11 @@ namespace GigeVision.Core.Models
         private string GetMyIp()
         {
             string localIP = "";
-            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+            var allInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            var filteredList = allInterfaces.Where(a => a.NetworkInterfaceType == NetworkInterfaceType.Ethernet);
+            if (filteredList != null)
+                allInterfaces = filteredList.ToArray();
+            foreach (NetworkInterface nic in allInterfaces)
             {
                 IPInterfaceProperties ipProp = nic.GetIPProperties();
                 GatewayIPAddressInformationCollection gwAddresses = ipProp.GatewayAddresses;
@@ -655,13 +625,6 @@ namespace GigeVision.Core.Models
                     return localIP;
                 }
             }
-
-            //using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
-            //{
-            //    socket.Connect("8.8.8.8", 65530);
-            //    IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-            //    localIP = endPoint.Address.ToString();
-            //}
             throw new Exception("System IP not found");
         }
     }

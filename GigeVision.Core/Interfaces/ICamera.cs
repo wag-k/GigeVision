@@ -13,11 +13,6 @@ namespace GigeVision.Core.Interfaces
     public interface ICamera
     {
         /// <summary>
-        /// If enabled library will use C++ native library for Stream Reception
-        /// </summary>
-        bool IsUsingCppForRx { get; set; }
-
-        /// <summary>
         /// Motor Controller for camera, zoom/focus/iris control if any
         /// </summary>
         MotorControl MotorController { get; set; }
@@ -109,6 +104,10 @@ namespace GigeVision.Core.Interfaces
         /// </summary>
         bool IsUsingExternalBuffer { get; set; }
 
+        Dictionary<string, string> RegistersDictionary { get; }
+
+        List<ICategory> CategoryDictionary { get; }
+
         /// <summary>
         /// This method will get current PC IP and Gets the Camera ip from Gvcp
         /// </summary>
@@ -193,9 +192,5 @@ namespace GigeVision.Core.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<bool> SyncParameters();
-
-        Dictionary<string, string> RegistersDictionary { get; }
-
-        List<ICategory> CategoryDictionary { get; }
     }
 }
