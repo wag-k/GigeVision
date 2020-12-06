@@ -27,11 +27,11 @@ namespace GenICam
             {
                 if (Register.AccessMode != GenAccessMode.WO)
                 {
-                    Int64 value = 0;
+                    long value = 0;
                     var length = Register.GetLength();
                     byte[] pBuffer = new byte[length];
 
-                    var reply = await Register.Get(length);
+                    var reply = await Register.Get(length).ConfigureAwait(false);
 
                     if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
                     {
@@ -80,7 +80,7 @@ namespace GenICam
                 byte[] pBuffer = new byte[length];
                 pBuffer[0] = Convert.ToByte(value);
 
-                var reply = await Register.Set(pBuffer, length);
+                var reply = await Register.Set(pBuffer, length).ConfigureAwait(false);
                 if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
                     Value = value;
             }
@@ -91,7 +91,7 @@ namespace GenICam
 
         public async void SetupFeatures()
         {
-            Value = await GetValue();
+            Value = await GetValue().ConfigureAwait(false);
             ValueToWrite = Value;
         }
 

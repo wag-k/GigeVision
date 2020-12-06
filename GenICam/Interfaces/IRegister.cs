@@ -7,12 +7,12 @@ namespace GenICam
         /// <summary>
         /// Register Address in hex format
         /// </summary>
-        Int64 Address { get; }
+        long Address { get; }
 
         /// <summary>
         /// Register Length
         /// </summary>
-        Int64 Length { get; }
+        long Length { get; }
 
         /// <summary>
         /// Register Access Mode

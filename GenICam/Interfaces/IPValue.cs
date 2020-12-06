@@ -5,6 +5,6 @@ namespace GenICam
 {
     public interface IPValue : IIsImplemented
     {
-        Task<Int64> GetValue();
+        Task<long> GetValue();
     }
 }

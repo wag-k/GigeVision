@@ -9,14 +9,14 @@ namespace GenICam
     {
         public double Min { get; private set; }
         public double Max { get; set; }
-        public Int64 Inc { get; private set; } = 1;
-        public IncMode IncMode { get; private set; }
-        public Representation Representation { get; private set; }
+        public long Inc { get; } = 1;
+        public IncMode IncMode { get; }
+        public Representation Representation { get; }
         public double Value { get; set; }
-        public List<double> ListOfValidValue { get; private set; }
-        public string Unit { get; private set; }
-        public DisplayNotation DisplayNotation { get; private set; }
-        public uint DisplayPrecision { get; private set; }
+        public List<double> ListOfValidValue { get; }
+        public string Unit { get; }
+        public DisplayNotation DisplayNotation { get; }
+        public uint DisplayPrecision { get; }
         public double ValueToWrite { get; set; }
 
         public GenFloat(CategoryProperties categoryProperties, double min, double max, long inc, IncMode incMode, Representation representation, double value, string unit, IPValue pValue, Dictionary<string, IntSwissKnife> expressions)
@@ -117,7 +117,7 @@ namespace GenICam
                 if (Register.AccessMode != GenAccessMode.WO)
                 {
                     var length = Register.GetLength();
-                    var reply = await Register.Get(length);
+                    var reply = await Register.Get(length).ConfigureAwait(false);
 
                     byte[] pBuffer;
                     if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
@@ -149,7 +149,7 @@ namespace GenICam
             }
             else if (PValue is IntSwissKnife intSwissKnife)
             {
-                value = (Int64)intSwissKnife.Value;
+                value = (long)intSwissKnife.Value;
             }
 
             return value;
@@ -170,11 +170,11 @@ namespace GenICam
                     switch (length)
                     {
                         case 2:
-                            pBuffer = BitConverter.GetBytes((UInt16)value);
+                            pBuffer = BitConverter.GetBytes((ushort)value);
                             break;
 
                         case 4:
-                            pBuffer = BitConverter.GetBytes((Int32)value);
+                            pBuffer = BitConverter.GetBytes((int)value);
                             break;
 
                         case 8:
@@ -182,7 +182,7 @@ namespace GenICam
                             break;
                     }
 
-                    var reply = await Register.Set(pBuffer, length);
+                    var reply = await Register.Set(pBuffer, length).ConfigureAwait(false);
                     if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
                         Value = value;
                 }
@@ -204,12 +204,12 @@ namespace GenICam
 
         public async void SetupFeatures()
         {
-            Value = await GetValue();
+            Value = await GetValue().ConfigureAwait(false);
             Max = GetMax();
             Min = GetMin();
         }
 
-        private Int64? ReadIntSwissKnife(string pNode)
+        private long? ReadIntSwissKnife(string pNode)
         {
             if (Expressions == null)
                 return null;
@@ -220,7 +220,7 @@ namespace GenICam
             var pValueNode = Expressions[pNode];
             if (pValueNode is IntSwissKnife intSwissKnife)
             {
-                return (Int64)intSwissKnife.Value;
+                return (long)intSwissKnife.Value;
             }
 
             return null;

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GenICam": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

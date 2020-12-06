@@ -605,7 +605,7 @@ namespace GigeVision.Core.Models
             string localIP = "";
             var allInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             var filteredList = allInterfaces.Where(a => a.NetworkInterfaceType == NetworkInterfaceType.Ethernet);
-            if (filteredList != null)
+            if (filteredList is not null)
                 allInterfaces = filteredList.ToArray();
             foreach (NetworkInterface nic in allInterfaces)
             {

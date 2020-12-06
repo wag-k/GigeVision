@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace GigeVision.Core.Interfaces
 {
     /// <summary>
-    /// General interface for GVCP procotol
+    /// General interface for GVCP protocol
     /// </summary>
     public interface IGvcp
     {
@@ -19,7 +19,7 @@ namespace GigeVision.Core.Interfaces
         EventHandler ElapsedOneSecond { get; set; }
 
         /// <summary>
-        /// This event will be fired when camera ip is changed
+        /// This event will be fired when camera IP is changed
         /// </summary>
         EventHandler CameraIpChanged { get; set; }
 
@@ -34,7 +34,7 @@ namespace GigeVision.Core.Interfaces
         int PortControl { get; }
 
         /// <summary>
-        /// Bool to keep the heartbeat of Gige Camera alive
+        /// Flag to keep the heartbeat of GigE Camera alive
         /// </summary>
         bool IsKeepingAlive { get; }
 
@@ -154,49 +154,49 @@ namespace GigeVision.Core.Interfaces
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(GvcpRegister register);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(string Ip, GvcpRegister register);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(string Ip, byte[] registerAddress);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(string Ip, string registerAddress);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(byte[] registerAddressOrKey);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(string registerAddressOrKey);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(string Ip, string[] registerAddresses);
 
         /// <summary>
         /// Read Register
         /// </summary>
-        /// <returns>Acknowledgement</returns>
+        /// <returns>Acknowledgment</returns>
         Task<GvcpReply> ReadRegisterAsync(string[] registerAddresses);
 
         /// <summary>
@@ -272,14 +272,14 @@ namespace GigeVision.Core.Interfaces
         /// <summary>
         /// Check camera status
         /// </summary>
-        /// <param name="ip">Ip Camera</param>
-        /// <returns>Camera Status: Available/Incontrol or Unavailable</returns>
+        /// <param name="ip">IP Camera</param>
+        /// <returns>Camera Status: Available/InControl or Unavailable</returns>
         Task<CameraStatus> CheckCameraStatusAsync(string ip);
 
         /// <summary>
         /// Check camera status
         /// </summary>
-        /// <returns>Camera Status: Available/Incontrol or Unavailable</returns>
+        /// <returns>Camera Status: Available/InControl or Unavailable</returns>
         Task<CameraStatus> CheckCameraStatusAsync();
 
         /// <summary>

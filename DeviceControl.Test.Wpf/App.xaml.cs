@@ -1,10 +1,6 @@
-﻿using Prism.Ioc;
-using DeviceControl.Test.Wpf.Views;
+﻿using DeviceControl.Test.Wpf.Views;
+using Prism.Ioc;
 using System.Windows;
-using GenICam;
-using GigeVision.Core;
-using GigeVision.Core.Interfaces;
-using GigeVision.Core.Models;
 
 namespace DeviceControl.Test.Wpf
 {

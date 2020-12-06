@@ -390,8 +390,8 @@ namespace GigeVision.Core.Models
         {
             string[] words = Message.Split(';');
             string fileName = words[0].Remove(0, 6);
-            int fileAddress = Int32.Parse(words[1], System.Globalization.NumberStyles.HexNumber);
-            int fileLength = Int32.Parse(words[2], System.Globalization.NumberStyles.HexNumber);
+            int fileAddress = int.Parse(words[1], System.Globalization.NumberStyles.HexNumber);
+            int fileLength = int.Parse(words[2], System.Globalization.NumberStyles.HexNumber);
 
             return (fileName, fileAddress, fileLength);
         }
@@ -922,27 +922,6 @@ namespace GigeVision.Core.Models
             return controlStatus;
         }
 
-        private void Reconnect()
-        {
-            try
-            {
-                ControlSocket?.Client.Close();
-                ControlSocket?.Close();
-            }
-            catch (Exception)
-            {
-            }
-            try
-            {
-                ControlSocket = new UdpClient(cameraIP, PortGvcp);
-                ControlSocket.Client.ReceiveTimeout = 1000;
-                ControlSocket.Client.SendTimeout = 500;
-            }
-            catch (Exception)
-            {
-            }
-        }
-
         /// <summary>
         /// Leaves to control if in control
         /// </summary>
@@ -998,6 +977,27 @@ namespace GigeVision.Core.Models
             task.Start();
             await task.ConfigureAwait(false);
             return reply;
+        }
+
+        private void Reconnect()
+        {
+            try
+            {
+                ControlSocket?.Client.Close();
+                ControlSocket?.Close();
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                ControlSocket = new UdpClient(cameraIP, PortGvcp);
+                ControlSocket.Client.ReceiveTimeout = 1000;
+                ControlSocket.Client.SendTimeout = 500;
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void RunHeartbeatThread()

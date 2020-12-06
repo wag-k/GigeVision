@@ -9,6 +9,6 @@ namespace GenICam
 
         void SetValue(string value);
 
-        Int64 GetMaxLength();
+        long GetMaxLength();
     }
 }

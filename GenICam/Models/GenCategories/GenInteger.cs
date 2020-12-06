@@ -15,28 +15,28 @@ namespace GenICam
         /// <summary>
         /// Integer Minimum Value
         /// </summary>
-        public Int64 Min { get; private set; } = long.MinValue;
+        public long Min { get; private set; } = long.MinValue;
 
         /// <summary>
         /// Integer Maximum Value
         /// </summary>
-        public Int64 Max { get; private set; } = long.MaxValue;
+        public long Max { get; private set; } = long.MaxValue;
 
         /// <summary>
         /// Integer Increment Value
         /// </summary>
-        public Int64 Inc { get; private set; } = 1;
+        public long Inc { get; } = 1;
 
-        public IncMode IncMode { get; private set; }
+        public IncMode IncMode { get; }
 
-        public Int64 Value
+        public long Value
         {
             get;
             set;
         }
 
-        public List<Int64> ListOfValidValue { get; private set; }
-        public string Unit { get; private set; }
+        public List<long> ListOfValidValue { get; }
+        public string Unit { get; }
         public long ValueToWrite { get; set; }
 
         public GenInteger(CategoryProperties categoryProperties, long min, long max, long inc, IncMode incMode, Representation representation, long value, string unit, IPValue pValue, Dictionary<string, IntSwissKnife> expressions)
@@ -44,7 +44,7 @@ namespace GenICam
             CategoryProperties = categoryProperties;
             Min = min;
             if (max == 0)
-                max = Int32.MaxValue;
+                max = int.MaxValue;
 
             Max = max;
             if (inc == 0)
@@ -67,16 +67,16 @@ namespace GenICam
             Value = value;
         }
 
-        public async Task<Int64> GetValue()
+        public async Task<long> GetValue()
         {
-            Int64 value = Value;
+            long value = Value;
 
             if (PValue is IRegister Register)
             {
                 if (Register.AccessMode != GenAccessMode.WO)
                 {
                     var length = Register.GetLength();
-                    var reply = await Register.Get(length);
+                    var reply = await Register.Get(length).ConfigureAwait(false);
 
                     byte[] pBuffer;
 
@@ -109,13 +109,13 @@ namespace GenICam
             }
             else if (PValue is IntSwissKnife intSwissKnife)
             {
-                value = (Int64)intSwissKnife.Value;
+                value = (long)intSwissKnife.Value;
             }
 
             return value;
         }
 
-        public async void SetValue(Int64 value)
+        public async void SetValue(long value)
         {
             if (PValue is IRegister Register)
             {
@@ -129,11 +129,11 @@ namespace GenICam
                         switch (length)
                         {
                             case 2:
-                                pBuffer = BitConverter.GetBytes((UInt16)value);
+                                pBuffer = BitConverter.GetBytes((ushort)value);
                                 break;
 
                             case 4:
-                                pBuffer = BitConverter.GetBytes((Int32)value);
+                                pBuffer = BitConverter.GetBytes((int)value);
                                 break;
 
                             case 8:
@@ -141,7 +141,7 @@ namespace GenICam
                                 break;
                         }
 
-                        var reply = await Register.Set(pBuffer, length);
+                        var reply = await Register.Set(pBuffer, length).ConfigureAwait(false);
                         if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
                             Value = value;
                     }
@@ -151,25 +151,25 @@ namespace GenICam
             RaisePropertyChanged(nameof(ValueToWrite));
         }
 
-        public Int64 GetMin()
+        public long GetMin()
         {
             var pMin = ReadIntSwissKnife("pMin");
             if (pMin != null)
-                return (Int64)pMin;
+                return (long)pMin;
 
             return Min;
         }
 
-        public Int64 GetMax()
+        public long GetMax()
         {
             var pMax = ReadIntSwissKnife("pMax");
             if (pMax != null)
-                return (Int64)pMax;
+                return (long)pMax;
 
             return Max;
         }
 
-        public Int64? GetInc()
+        public long? GetInc()
         {
             if (IncMode == IncMode.fixedIncrement)
                 return Inc;
@@ -177,7 +177,7 @@ namespace GenICam
                 return null;
         }
 
-        public List<Int64> GetListOfValidValue()
+        public List<long> GetListOfValidValue()
         {
             if (IncMode == IncMode.listIncrement)
                 return ListOfValidValue;
@@ -200,12 +200,12 @@ namespace GenICam
             return Unit;
         }
 
-        public void ImposeMin(Int64 min)
+        public void ImposeMin(long min)
         {
             throw new NotImplementedException();
         }
 
-        public void ImposeMax(Int64 max)
+        public void ImposeMax(long max)
         {
             throw new NotImplementedException();
         }
@@ -215,7 +215,7 @@ namespace GenICam
             throw new NotImplementedException();
         }
 
-        private Int64? ReadIntSwissKnife(string pNode)
+        private long? ReadIntSwissKnife(string pNode)
         {
             if (Expressions == null)
                 return null;
@@ -226,7 +226,7 @@ namespace GenICam
             var pValueNode = Expressions[pNode];
             if (pValueNode is IntSwissKnife intSwissKnife)
             {
-                return (Int64)intSwissKnife.Value;
+                return (long)intSwissKnife.Value;
             }
 
             return null;
@@ -234,7 +234,7 @@ namespace GenICam
 
         public async void SetupFeatures()
         {
-            Value = await GetValue();
+            Value = await GetValue().ConfigureAwait(false);
             Max = GetMax();
             Min = GetMin();
             ValueToWrite = Value;

@@ -5,12 +5,12 @@ namespace GenICam
 {
     public interface IGenRegister
     {
-        Task<IReplyPacket> Get(Int64 length);
+        Task<IReplyPacket> Get(long length);
 
-        Task<IReplyPacket> Set(byte[] pBuffer, Int64 length);
+        Task<IReplyPacket> Set(byte[] pBuffer, long length);
 
-        Int64 GetAddress();
+        long GetAddress();
 
-        Int64 GetLength();
+        long GetLength();
     }
 }

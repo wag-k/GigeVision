@@ -6,10 +6,10 @@ namespace GenICam
 {
     public class GenCommand : GenCategory, IGenCommand
     {
-        public Int64 Value { get; set; }
-        public Int64 CommandValue { get; private set; }
+        public long Value { get; set; }
+        public long CommandValue { get; }
 
-        public GenCommand(CategoryProperties categoryProperties, Int64 commandValue, IPValue pValue, Dictionary<string, IntSwissKnife> expressions)
+        public GenCommand(CategoryProperties categoryProperties, long commandValue, IPValue pValue, Dictionary<string, IntSwissKnife> expressions)
         {
             CategoryProperties = categoryProperties;
             CommandValue = commandValue;
@@ -29,11 +29,11 @@ namespace GenICam
                 switch (length)
                 {
                     case 2:
-                        pBuffer = BitConverter.GetBytes((UInt16)CommandValue);
+                        pBuffer = BitConverter.GetBytes((ushort)CommandValue);
                         break;
 
                     case 4:
-                        pBuffer = BitConverter.GetBytes((Int32)CommandValue);
+                        pBuffer = BitConverter.GetBytes((int)CommandValue);
                         break;
 
                     case 8:
@@ -41,7 +41,7 @@ namespace GenICam
                         break;
                 }
 
-                await Register.Set(pBuffer, length);
+                await Register.Set(pBuffer, length).ConfigureAwait(false);
             };
         }
 

@@ -2,17 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GigeWpf.Test
 {
@@ -37,8 +27,8 @@ namespace GigeWpf.Test
 
         public Camera Camera
         {
-            get { return camera; }
-            set { camera = value; }
+            get => camera;
+            set => camera = value;
         }
 
         private async void Setup()
@@ -47,7 +37,7 @@ namespace GigeWpf.Test
             {
                 IsRawFrame = false,
             };
-            var listOfDevices = await camera.Gvcp.GetAllGigeDevicesInNetworkAsnyc().ConfigureAwait(false);
+            List<CameraInformation> listOfDevices = await camera.Gvcp.GetAllGigeDevicesInNetworkAsnyc().ConfigureAwait(false);
             if (listOfDevices.Count > 0) { Camera.IP = listOfDevices.FirstOrDefault()?.IP; }
             camera.FrameReady += FrameReady;
             camera.Gvcp.ElapsedOneSecond += UpdateFps;

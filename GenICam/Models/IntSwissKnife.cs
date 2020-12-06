@@ -12,21 +12,6 @@ namespace GenICam
     public class IntSwissKnife : IPValue
     {
         /// <summary>
-        /// Math Variable Parameter
-        /// </summary>
-        public Dictionary<string, object> PVariables { get; set; }
-
-        /// <summary>
-        /// Formula Expression
-        /// </summary>
-        public string Formula { get; private set; }
-
-        /// <summary>
-        /// Formula Result
-        /// </summary>
-        public double Value { get; set; }
-
-        /// <summary>
         /// Main Method that calculate the given formula
         /// </summary>
         /// <param name="gvcp"></param>
@@ -46,12 +31,31 @@ namespace GenICam
             Formula = Formula.Replace(" ", "");
             List<char> opreations = new List<char> { '(', '+', '-', '/', '*', '=', '?', ':', ')', '>', '<', '&', '|', '^', '~', '%' };
 
-            foreach (var character in opreations)
-                if (opreations.Where(x => x == character).Count() > 0)
+            foreach (char character in opreations)
+            {
+                if (opreations.Any(x => x == character))
+                {
                     Formula = Formula.Replace($"{character}", $" {character} ");
+                }
+            }
 
             ExecuteFormula(this).ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Math Variable Parameter
+        /// </summary>
+        public Dictionary<string, object> PVariables { get; set; }
+
+        /// <summary>
+        /// Formula Expression
+        /// </summary>
+        public string Formula { get; private set; }
+
+        /// <summary>
+        /// Formula Result
+        /// </summary>
+        public double Value { get; set; }
 
         /// <summary>
         /// this method calculates the formula and returns the result
@@ -60,27 +64,39 @@ namespace GenICam
         /// <returns></returns>
         public async Task<double> ExecuteFormula(IntSwissKnife intSwissKnife)
         {
-            foreach (var word in intSwissKnife.Formula.Split())
+            foreach (string word in intSwissKnife.Formula.Split())
             {
-                foreach (var pVariable in PVariables)
+                foreach (KeyValuePair<string, object> pVariable in PVariables)
                 {
                     if (pVariable.Key.Equals(word))
                     {
                         string value = "";
                         //ToDo : Cover all cases
                         if (pVariable.Value is GenInteger integer)
-                            value = (await integer.GetValue()).ToString();
+                        {
+                            value = (await integer.GetValue().ConfigureAwait(false)).ToString();
+                        }
                         else if (pVariable.Value is GenIntReg intReg)
-                            value = (await intReg.GetValue()).ToString();
+                        {
+                            value = (await intReg.GetValue().ConfigureAwait(false)).ToString();
+                        }
                         else if (pVariable.Value is GenMaskedIntReg genMaskedIntReg)
-                            value = (await genMaskedIntReg.GetValue()).ToString();
+                        {
+                            value = (await genMaskedIntReg.GetValue().ConfigureAwait(false)).ToString();
+                        }
                         else if (pVariable.Value is IntSwissKnife intSwissKnife1)
-                            value = (await intSwissKnife1.GetValue()).ToString();
+                        {
+                            value = (await intSwissKnife1.GetValue().ConfigureAwait(false)).ToString();
+                        }
                         else if (pVariable.Value is GenFloat genFloat)
-                            value = (await genFloat.GetValue()).ToString();
+                        {
+                            value = (await genFloat.GetValue().ConfigureAwait(false)).ToString();
+                        }
 
                         if (value == "")
+                        {
                             throw new Exception("Failed to read register value", new InvalidDataException());
+                        }
 
                         intSwissKnife.Formula = intSwissKnife.Formula.Replace(word, value);
                         break;
@@ -92,8 +108,7 @@ namespace GenICam
             {
                 if (Formula != string.Empty)
                 {
-                    var value = Evaluate(intSwissKnife.Formula);
-                    Value = value;
+                    Value = (double)Evaluate(intSwissKnife.Formula);
                 }
                 else
                 {
@@ -103,6 +118,11 @@ namespace GenICam
             {
             }
             return Value;
+        }
+
+        public async Task<long> GetValue()
+        {
+            return (long)await ExecuteFormula(this).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -118,29 +138,75 @@ namespace GenICam
             bool tempBoolean = false;
             int integerValue = 0;
 
-            foreach (var word in expression.Split())
+            foreach (string word in expression.Split())
             {
                 if (word.StartsWith("0x"))
-                    values.Push(Int64.Parse(word.Substring(2), System.Globalization.NumberStyles.HexNumber));
-                else if (Int64.TryParse(word, out Int64 tempNumber))
+                {
+                    values.Push(long.Parse(word.Substring(2), System.Globalization.NumberStyles.HexNumber));
+                }
+                else if (long.TryParse(word, out long tempNumber))
+                {
                     values.Push(tempNumber);
+                }
                 else
                 {
                     if (word.Equals("(")) { continue; }
-                    else if (word.Equals("+")) opreators.Push(word);
-                    else if (word.Equals("-")) opreators.Push(word);
-                    else if (word.Equals("*")) opreators.Push(word);
-                    else if (word.Equals("/")) opreators.Push(word);
-                    else if (word.Equals("=")) opreators.Push(word);
-                    else if (word.Equals("?")) opreators.Push(word);
-                    else if (word.Equals(":")) opreators.Push(word);
-                    else if (word.Equals("&")) opreators.Push(word);
-                    else if (word.Equals("|")) opreators.Push(word);
-                    else if (word.Equals(">")) opreators.Push(word);
-                    else if (word.Equals("<")) opreators.Push(word);
-                    else if (word.Equals("%")) opreators.Push(word);
-                    else if (word.Equals("^")) opreators.Push(word);
-                    else if (word.Equals("~")) opreators.Push(word);
+                    else if (word.Equals("+"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("-"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("*"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("/"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("="))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("?"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals(":"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("&"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("|"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals(">"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("<"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("%"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("^"))
+                    {
+                        opreators.Push(word);
+                    }
+                    else if (word.Equals("~"))
+                    {
+                        opreators.Push(word);
+                    }
                     else if (word.Equals(")"))
                     {
                         while (opreators.Count > 0)
@@ -202,40 +268,51 @@ namespace GenICam
                                             opreators.Pop();
                                             integerValue = (int)GetLongValueFromString(values.Pop().ToString());
                                             if (GetLongValueFromString(values.Pop().ToString()) >= integerValue)
+                                            {
                                                 tempBoolean = true;
+                                            }
+
                                             break;
 
                                         case "<":
                                             opreators.Pop();
                                             integerValue = (int)GetLongValueFromString(values.Pop().ToString());
                                             if (GetLongValueFromString(values.Pop().ToString()) <= integerValue)
+                                            {
                                                 tempBoolean = true;
+                                            }
+
                                             break;
 
                                         default:
-                                            var firstValue = (int)GetLongValueFromString(values.Pop().ToString());
-                                            var secondValue = (int)GetLongValueFromString(values.Pop().ToString());
+                                            int firstValue = (int)GetLongValueFromString(values.Pop().ToString());
+                                            int secondValue = (int)GetLongValueFromString(values.Pop().ToString());
 
                                             if (secondValue == firstValue)
+                                            {
                                                 tempBoolean = true;
+                                            }
+
                                             break;
                                     }
                                 }
                                 else
                                 {
-                                    var firstValue = (int)GetLongValueFromString(values.Pop().ToString());
-                                    var secondValue = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int firstValue = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int secondValue = (int)GetLongValueFromString(values.Pop().ToString());
 
                                     if (secondValue == firstValue)
+                                    {
                                         tempBoolean = true;
+                                    }
                                 }
                             }
                             else if (opreator.Equals("&"))
                             {
                                 if (values.Count > 1)
                                 {
-                                    var byte2 = (int)GetLongValueFromString(values.Pop().ToString());
-                                    var byte1 = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int byte2 = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int byte1 = (int)GetLongValueFromString(values.Pop().ToString());
                                     integerValue = (byte1 & byte2);
                                     values.Push(integerValue);
                                 }
@@ -244,8 +321,8 @@ namespace GenICam
                             {
                                 if (values.Count > 1)
                                 {
-                                    var byte2 = (int)GetLongValueFromString(values.Pop().ToString());
-                                    var byte1 = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int byte2 = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int byte1 = (int)GetLongValueFromString(values.Pop().ToString());
                                     integerValue = (byte1 | byte2);
                                     values.Push(integerValue);
                                 }
@@ -254,8 +331,8 @@ namespace GenICam
                             {
                                 if (values.Count > 2)
                                 {
-                                    var byte2 = (int)GetLongValueFromString(values.Pop().ToString());
-                                    var byte1 = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int byte2 = (int)GetLongValueFromString(values.Pop().ToString());
+                                    int byte1 = (int)GetLongValueFromString(values.Pop().ToString());
                                     integerValue = (byte1 ^ byte2);
                                     values.Push(integerValue);
                                 }
@@ -282,7 +359,10 @@ namespace GenICam
                                         default:
                                             integerValue = (int)GetLongValueFromString(values.Pop().ToString());
                                             if (GetLongValueFromString(values.Pop().ToString()) > integerValue)
+                                            {
                                                 tempBoolean = true;
+                                            }
+
                                             break;
                                     }
                                 }
@@ -290,7 +370,9 @@ namespace GenICam
                                 {
                                     integerValue = (int)GetLongValueFromString(values.Pop().ToString());
                                     if (GetLongValueFromString(values.Pop().ToString()) > integerValue)
+                                    {
                                         tempBoolean = true;
+                                    }
                                 }
                             }
                             else if (opreator.Equals("<"))
@@ -309,7 +391,10 @@ namespace GenICam
                                         default:
                                             integerValue = (int)GetLongValueFromString(values.Pop().ToString());
                                             if (GetLongValueFromString(values.Pop().ToString()) < integerValue)
+                                            {
                                                 tempBoolean = true;
+                                            }
+
                                             break;
                                     }
                                 }
@@ -317,7 +402,9 @@ namespace GenICam
                                 {
                                     integerValue = (int)GetLongValueFromString(values.Pop().ToString());
                                     if (GetLongValueFromString(values.Pop().ToString()) < integerValue)
+                                    {
                                         tempBoolean = true;
+                                    }
                                 }
                             }
                             else if (opreator.Equals("?"))
@@ -325,7 +412,9 @@ namespace GenICam
                                 if (tempBoolean)
                                 {
                                     if (values.Count > 0)
+                                    {
                                         return values.Pop();
+                                    }
                                 }
                             }
                             else if (opreator.Equals(":"))
@@ -337,12 +426,18 @@ namespace GenICam
             }
 
             if (values.Count > 0)
+            {
                 return values.Pop();
+            }
 
             if (tempBoolean)
+            {
                 return 1;
+            }
             else
+            {
                 return 0;
+            }
 
             throw new InvalidDataException("Failed to read the formula");
         }
@@ -356,11 +451,6 @@ namespace GenICam
             }
 
             return long.Parse(value); ;
-        }
-
-        public async Task<Int64> GetValue()
-        {
-            return (Int64)await ExecuteFormula(this);
         }
     }
 }

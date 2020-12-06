@@ -6,9 +6,9 @@ namespace GenICam
 {
     public interface IGenEnumeration
     {
-        Task<Int64> GetIntValue();
+        Task<long> GetIntValue();
 
-        void SetIntValue(Int64 value);
+        void SetIntValue(long value);
 
         Dictionary<string, EnumEntry> GetEntries();
 
@@ -17,9 +17,9 @@ namespace GenICam
 
         EnumEntry GetEntryByName(string entryName);
 
-        EnumEntry GetEntry(Int64 entryValue);
+        EnumEntry GetEntry(long entryValue);
 
         //ToDo: Look this method up
-        EnumEntry GetCurrentEntry(Int64 entryValue);
+        EnumEntry GetCurrentEntry(long entryValue);
     }
 }

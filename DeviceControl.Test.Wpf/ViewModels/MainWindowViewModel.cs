@@ -9,6 +9,11 @@ namespace DeviceControl.Test.Wpf.ViewModels
     {
         private string _title = "DeviceControl Test";
 
+        public MainWindowViewModel()
+        {
+            DeviceControl = new DeviceControlViewModel("192.168.10.77");
+        }
+
         public string Title
         {
             get { return _title; }
@@ -17,10 +22,5 @@ namespace DeviceControl.Test.Wpf.ViewModels
 
         public DeviceControlViewModel DeviceControl { get; set; }
         public ICamera Camera { get; }
-
-        public MainWindowViewModel()
-        {
-            DeviceControl = new DeviceControlViewModel("192.168.10.244");
-        }
     }
 }

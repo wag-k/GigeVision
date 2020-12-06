@@ -16,7 +16,7 @@ namespace GenICam
         /// <summary>
         /// Enumeration Value Parameter
         /// </summary>
-        public Int64 Value { get; set; }
+        public long Value { get; set; }
 
         public long ValueToWrite { get; set; }
 
@@ -40,7 +40,7 @@ namespace GenICam
                     var length = Register.GetLength();
                     byte[] pBuffer;
 
-                    var reply = await Register.Get(length);
+                    var reply = await Register.Get(length).ConfigureAwait(false);
                     if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
                     {
                         if (reply.MemoryValue != null)
@@ -64,7 +64,7 @@ namespace GenICam
             }
             else if (PValue is IntSwissKnife intSwissKnife)
             {
-                return (Int64)intSwissKnife.Value;
+                return (long)intSwissKnife.Value;
             }
 
             return Value;
@@ -87,11 +87,11 @@ namespace GenICam
                     switch (length)
                     {
                         case 2:
-                            pBuffer = BitConverter.GetBytes((UInt16)value);
+                            pBuffer = BitConverter.GetBytes((ushort)value);
                             break;
 
                         case 4:
-                            pBuffer = BitConverter.GetBytes((Int32)value);
+                            pBuffer = BitConverter.GetBytes((int)value);
                             break;
 
                         case 8:
@@ -99,7 +99,7 @@ namespace GenICam
                             break;
                     }
 
-                    var reply = await Register.Set(pBuffer, length);
+                    var reply = await Register.Set(pBuffer, length).ConfigureAwait(false);
 
                     if (reply.IsSentAndReplyReceived && reply.Reply[0] == 0)
                         Value = value;
@@ -142,7 +142,7 @@ namespace GenICam
 
         public async void SetupFeatures()
         {
-            Value = await GetIntValue();
+            Value = await GetIntValue().ConfigureAwait(false);
 
             ValueToWrite = Entries.Values.ToList().IndexOf(GetCurrentEntry(Value));
         }
