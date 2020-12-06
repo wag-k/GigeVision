@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>9.0</LangVersion>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>Touseef Elahi</Authors>
     <Company>Stira.sa</Company>
     <Product>GigeVision</Product>
@@ -12,21 +11,17 @@
     <PackageTags>GigeVision, GeniCam, GVSP, GVCP</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageIcon>gige.png</PackageIcon>
     <PackageIconUrl />
     <Platforms>AnyCPU;x64;x86</Platforms>
     <PackageReleaseNotes>Improved GVSP Reception using raw sockets and Span&lt;byte&gt; With RaiseProperty</PackageReleaseNotes>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Configurations>Debug;Release;PublishLocally</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="build\GigeVision.Core.targets">
-      <PackagePath>build/</PackagePath>
-      <Pack>true</Pack>
-    </None>
     <None Include="gige.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -43,11 +38,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GenICam\GenICam.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationFramework">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
