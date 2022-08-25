@@ -12,13 +12,14 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-    <Version>2.2.1</Version>
+    <Version>2.3.3.3</Version>
 
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageIcon>gige.png</PackageIcon>
     <PackageIconUrl />
     <Platforms>AnyCPU;x64;x86</Platforms>
     <PackageReleaseNotes>
+	  2.3.3: Get all gige devices improved
       2.1.1: Upgraded to Netcore 6.0 with Multicast reception fix
       1.8.0: Pushes the block id (frame number) in the frame event and Gives notification on frameloss
       Fix Receiver IP Detection
