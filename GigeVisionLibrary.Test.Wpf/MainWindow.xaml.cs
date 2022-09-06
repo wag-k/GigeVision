@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GigeVisionLibrary.Test.Wpf
@@ -34,14 +35,12 @@ namespace GigeVisionLibrary.Test.Wpf
         private async void Setup()
         {
             camera = new Camera();
-
             var listOfDevices = await camera.Gvcp.GetAllGigeDevicesInNetworkAsnyc().ConfigureAwait(false);
-
             if (listOfDevices.Count > 0)
             {
                 Camera.IP = listOfDevices.FirstOrDefault()?.IP;
             }
-            camera.Payload = 8000;
+            //camera.Payload = 8000;
             camera.FrameReady += FrameReady;
             camera.Updates += Updates;
             camera.Gvcp.ElapsedOneSecond += UpdateFps;

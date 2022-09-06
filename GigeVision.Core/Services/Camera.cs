@@ -1,9 +1,7 @@
-﻿using GenICam;
-using GigeVision.Core.Enums;
+﻿using GigeVision.Core.Enums;
 using GigeVision.Core.Interfaces;
 using Stira.WpfCore;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GigeVision.Core.Models
@@ -32,7 +30,7 @@ namespace GigeVision.Core.Models
 
         private bool isStreaming;
 
-        private StreamReceiver streamReceiver;
+        private IStreamReceiver streamReceiver;
 
         private bool isMulticast;
         private uint payload = 0;
@@ -82,7 +80,8 @@ namespace GigeVision.Core.Models
         /// <summary>
         /// Camera stream status
         /// </summary>
-        public bool IsStreaming { get => isStreaming; set { isStreaming = value; OnPropertyChanged(nameof(IsStreaming)); } }
+        public bool IsStreaming
+        { get => isStreaming; set { isStreaming = value; OnPropertyChanged(nameof(IsStreaming)); } }
 
         /// <summary>
         /// GVCP controller
@@ -528,7 +527,6 @@ namespace GigeVision.Core.Models
                         }
                         await Gvcp.ReadAllRegisterAddressFromCameraAsync().ConfigureAwait(false);
                         await SyncParameters(0);
-
                     }
 
                     return false;
@@ -585,7 +583,7 @@ namespace GigeVision.Core.Models
         private void Init()
         {
             MotorController = new MotorControl();
-            streamReceiver = new StreamReceiver(this);
+            streamReceiver = new StreamReceiverPipeline(this);
             SetRxIP();
             Gvcp.CameraIpChanged += CameraIpChanged;
         }

@@ -79,7 +79,7 @@ namespace GigeVision.Core.Models
         /// <summary>
         /// Request ID
         /// </summary>
-        public ushort RequestId { get; set; }
+        public static ushort RequestId { get; set; }
 
         /// <summary>
         /// Is command valid
@@ -110,14 +110,12 @@ namespace GigeVision.Core.Models
         /// <param name="valueToWrite"></param>
         public void GenerateCommand(byte[] adress, GvcpCommandType type, ushort requestID, uint valueToWrite = 0, ushort count = 0)
         {
-            Random random = new Random();
             Address = adress;
             Type = type;
             if (requestID == 0)
             {
-                requestID = (ushort)random.Next(1, 65535);
+                requestID = (ushort)(1 + RequestId++);
             }
-            RequestId = requestID;
             switch (Type)
             {
                 case GvcpCommandType.Discovery:

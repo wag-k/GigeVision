@@ -54,5 +54,15 @@
         /// Timestamp index start
         /// </summary>
         public int TimeStampIndex { get; set; }
+
+        public int Height { get; set; }
+        public int Width { get; set; }
+        public int OffsetX { get; set; }
+        public int OffsetY { get; set; }
+
+        /// <summary>
+        /// It is supposed to be Payload type enum instead of a bool
+        /// </summary>
+        public bool IsImageData { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -234,7 +235,6 @@ namespace GigeVision.Core.Models
                 }
 
                 IPEndPoint endPoint = new(new IPAddress(ip), PortGvcp);
-
                 broadcastClient = new UdpClient(0)
                 {
                     EnableBroadcast = true
